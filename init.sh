@@ -14,7 +14,7 @@ do
     docker tag ghcr.io/thirdbyte/pacu:$image $image
     docker rmi ghcr.io/thirdbyte/pacu:$image
 done
-git clone https://github.com/thirdbyte/pacu /opt/pacu
+git clone https://github.com/Slayer0x/pacu /opt/pacu
 mkdir -p /opt/pacu
 cp /opt/pacu/setup.sh /usr/local/bin/pacu
 chmod +x /usr/local/bin/pacu

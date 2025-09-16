@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 RUN apt-get -y update && apt-get -y dist-upgrade && \
 	DEBIAN_FRONTEND=noninteractive apt-get install -y make nano git golang && \
-	cd /root && git clone https://github.com/kgretzky/evilginx2.git && \
+	cd /root && git clone https://github.com/ITS-by-Ibermatica/Evilginx-3.3.0.git && \
 	cd evilginx2 && \
 	sed -i /'req.Header.Set(string(hg),\ egg2)'/d ./core/http_proxy.go && \
 	sed -i /'egg2\ :=\ req.Host'/d ./core/http_proxy.go && \
